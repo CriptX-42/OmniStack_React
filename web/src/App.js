@@ -1,8 +1,20 @@
 import React from 'react';
 
+//Componente
+//Estado
+//Propriedade
+
+
+function Header() {
+  return(
+    <h1>Header</h1>
+  ) 
+}
+
+
 function App() {
   return (
-   <h1>Hello World</h1>
+    <Header/>
   );
 }
 
