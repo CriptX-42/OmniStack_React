@@ -32,9 +32,7 @@ function App() {
   }, []);
 
   async function handleAddDev(e) {
-    e.preventDegaut(){
-      
-    }
+    e.preventDefault();
   }
 
 
