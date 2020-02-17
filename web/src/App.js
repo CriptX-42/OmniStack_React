@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from './services/api'
 
 import './Global.css';
 import './App.css';
@@ -7,12 +8,21 @@ import './Main.css';
 
 
 function App() {
+  const [devs, setDevs] = useState([]);
+
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
 
   const [github_username, setGitHubUserName] = useState('');
   const [techs, setTechs] = useState('');
 
+  useEffect(() => {
+    async function loadDevs(){
+      const response = await api.get('/devs');
+      setDevs(response.data);
+    }
+    loadDevs();
+  }, []);
 
   //dispara uma função toda vez que a informação alterar ou a renderização do componente
   useEffect(() => {
@@ -33,6 +43,17 @@ function App() {
 
   async function handleAddDev(e) {
     e.preventDefault();
+
+    const response = await api.post('/devs',{
+      github_username,
+      techs,
+      latitude,
+      longitude
+    })
+    setGitHubUserName('');
+    setTechs('');
+
+    setDevs([...devs, response.data]);
   }
 
 
@@ -76,60 +97,25 @@ function App() {
 
       </aside>
       <main>
-        <ul>
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/29991358?s=460&v=4" alt="Ricardo Carvalho"></img>
-            </header>
-              <div>
-                <strong>Ricardo Carvalho</strong>
-              </div>
-              <span>React, Angular, dotNet</span>
-
-              <p>Apenas um programador</p>
-              <a href="https://github.com/CriptX-42">Acessar Perfil no GitHub</a>
-          </li>
-          
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/29991358?s=460&v=4" alt="Ricardo Carvalho"></img>
-            </header>
-              <div>
-                <strong>Ricardo Carvalho</strong>
-              </div>
-              <span>React, Angular, dotNet</span>
-
-              <p>Apenas um programador</p>
-              <a href="https://github.com/CriptX-42">Acessar Perfil no GitHub</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/29991358?s=460&v=4" alt="Ricardo Carvalho"></img>
-            </header>
-              <div>
-                <strong>Ricardo Carvalho</strong>
-              </div>
-              <span>React, Angular, dotNet</span>
-
-              <p>Apenas um programador</p>
-              <a href="https://github.com/CriptX-42">Acessar Perfil no GitHub</a>
-          </li>
-
-          <li className="dev-item">
-            <header>
-              <img src="https://avatars1.githubusercontent.com/u/29991358?s=460&v=4" alt="Ricardo Carvalho"></img>
-            </header>
-              <div>
-                <strong>Ricardo Carvalho</strong>
-              </div>
-              <span>React, Angular, dotNet</span>
-
-              <p>Apenas um programador</p>
-              <a href="https://github.com/CriptX-42">Acessar Perfil no GitHub</a>
-          </li>
         
-          
+        <ul>
+        {devs.map(dev => {
+          return(
+            <li key={dev.id} className="dev-item">
+              <header>
+                <img src={dev.avatar_url} alt={dev.name}></img>
+              </header>
+                <div>
+                  <strong>{dev.name}</strong>
+                </div>
+                <span>{dev.techs.join(', ')}</span>
+
+                <p>{dev.bio}</p>
+                <a href={`https://github.com/${dev.github_username}`}>Acessar Perfil no GitHub</a>
+            </li>
+          )
+        })}
+
         </ul>
       </main>
     </div>
